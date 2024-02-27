@@ -1,0 +1,118 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>ArcGIS JavaScript Tutorials: Create a Starter App</title>
+  <style>
+    html, body, #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+  
+    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.15/"></script>
+  <script src="data.js"></script>
+  
+  <script>
+
+	var point_template_area = {
+					title: "{Name}",
+					content: "Khu vực này ở <b>{Location}</b>."
+				};
+	var point_template_district = {
+					title: "{Name}",
+					content: "Huyện ở <b>{Location}</b>."
+				};
+	var jsondata = {
+
+		"lines":[
+			{
+				type: "polyline",
+				paths: [
+					d7
+				],
+				symbol: {
+					type: "simple-line",
+					color: [226, 119, 40], // orange
+					width: 2
+				},
+				Name: "Ô Môn",
+				Location: "Ô Môn",
+				popupTemplate: point_template_area
+			}
+		],
+		"polygons":[
+			{
+				type: "polygon",
+				rings: [
+					// data
+					
+				],
+				Name: "Ô Môn",
+				Location: "Ô Môn",
+				symbol: {
+					type: "simple-fill",
+					color: [227, 139, 79, 0.4],
+					outline: {
+						color: [255, 255, 255],
+						width: 1
+					}
+				},
+				popupTemplate: point_template_district
+			}
+			// 
+			
+		]
+	};
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/Graphic",
+      "esri/layers/GraphicsLayer"
+    ], function(Map, MapView, Graphic, GraphicsLayer) {
+
+		var map = new Map({
+		basemap: "topo-vector"
+		});
+		 map.on("load", function(){
+          map.graphics.enableMouseEvents();
+        });
+
+		var view = new MapView({
+		container: "viewDiv",
+		map: map,
+		center: [105.560532448366, 10.148417422344627],
+		zoom: 15,
+          highlightOptions: {
+            color: "blue"
+          }
+		});
+		var createGraphic = function (data) {
+			return new Graphic({
+				geometry: data,
+				symbol: data.symbol,
+				attributes: data,
+				popupTemplate: data.popupTemplate
+			});
+		}; 
+		var graphicsLayer = new GraphicsLayer();
+
+		jsondata.lines.forEach(function(data){
+			graphicsLayer.add(createGraphic(data));
+		});
+		jsondata.polygons.forEach(function(data){
+			graphicsLayer.add(createGraphic(data));
+		});
+		map.add(graphicsLayer);
+		
+
+    });
+  </script>
+</head>
+<body>
+  <div id="viewDiv"></div>
+</body>
+</html>
