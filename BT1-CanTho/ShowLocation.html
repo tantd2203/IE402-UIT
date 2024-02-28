@@ -1,0 +1,426 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>ArcGIS JavaScript Tutorials: Create a Starter App</title>
+    <style>
+        html, body, #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.15/esri/themes/light/main.css">
+    <script src="https://js.arcgis.com/4.15/"></script>
+    <script src="ProvinceData.js"></script>
+    <script src="ProvincialHighwayData.js"></script>
+
+    <script>
+        var point_template_location = {
+            title: "{Name}",
+            content: "<b>{Location}</b>."
+        };
+
+        var point_template_line = {
+            title: "{Name}",
+            content: "<b>{Location}</b>."
+        };
+
+
+
+        var jsondata = {
+            "points": [
+                {
+                    type: "point",
+                    longitude: 105.7561090852892,
+                    latitude: 10.039932562130035,
+                    Name: "Thành Phố Cần Thơ",
+                    Location: "Thành phố Cần Thơ nằm trong vùng trung – hạ lưu và ở vị trí trung tâm châu thổ đồng bằng sông Cửu Long, trải dài trên 55km dọc bờ Tây sông Hậu, tổng diện tích tự nhiên 1.401,61 km2",
+                    symbol: {
+                        type: 'picture-marker',
+                        url: 'images/city.png', // cẩn thận khi dùng absolute URL
+                        width: '48px',
+                        height: '48px',
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "point",
+                    longitude: 105.7659965,
+                    latitude: 10.0286342,
+                    Name: "Trường Đại học Cần Thơ",
+                    Location: "Khu II, Đ. 3 Tháng 2, Xuân Khánh, Ninh Kiều, Cần Thơ",
+                    symbol: {
+                        type: 'picture-marker',
+                        url: 'images/school.png',
+                        width: '48px',
+                        height: '48px',
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "point",
+                    longitude: 105.769188,
+                    latitude: 10.030966,
+                    Name: "Trường Công Nghệ Thông Tin và Truyền Thông",
+                    Location: "Số 1 đường Lý Tự Trọng, phường An Phú, quận Ninh Kiều, thành phố Cần Thơ",
+                    symbol: {
+                        type: 'picture-marker',
+                        url: 'images/school.png',
+                        width: '48px',
+                        height: '48px',
+                    },
+                    popupTemplate: point_template_location
+                }
+            ],
+
+            "polygons": [
+                {
+                    type: "polygon",
+                    rings: VinhThanh,
+                    Name: "Vĩnh Thạnh",
+                    Location: "Huyện Vĩnh Thạnh nằm ở phía tây bắc của thành phố Cần Thơ, cách trung tâm thành phố khoảng 80 km. Huyện có diện tích 297,59 km², dân số năm 2019 là 98.399 người, mật độ dân số đạt 331 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [0, 153, 0, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: ThotNot,
+                    Name: "Thốt Nốt",
+                    Location: "Quận Thốt Nốt nằm ở phía bắc nội thành của thành phố Cần Thơ, nằm cách trung tâm thành phố khoảng 42 km theo Quốc lộ 91. Quận có diện tích 118 km², dân số năm 2019 là 155.360 người, mật độ dân số đạt 1.317 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [0, 0, 230, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: CoDo,
+                    Name: "Cờ Đỏ",
+                    Location: "Huyện Cờ Đỏ nằm ở phía tây ngoại thành của thành phố Cần Thơ, nằm cách trung tâm thành phố khoảng 41 km. Huyện có diện tích 319,81 km², dân số năm 2019 là 116.576 người, mật độ dân số đạt 486 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [204, 102, 255, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: OMon,
+                    Name: "Ô Môn",
+                    Location: "Quận Ô Môn nằm ở phía bắc nội thành của thành phố Cần Thơ, nằm cách trung tâm thành phố khoảng 20 km theo Quốc lộ 91. Quận có diện tích 125,40 km², dân số năm 2019 là 128.677 người, mật độ dân số đạt 1.026 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [179, 179, 0, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: ThoiLai,
+                    Name: "Thới Lái",
+                    Location: "Huyện Thới Lai nằm ở phía tây ngoại thành của thành phố Cần Thơ, nằm cách trung tâm thành phố khoảng 29 km theo đường Lê Hồng Phong. Huyện có diện tích 255,66 km², dân số năm 2019 là 109.684 người, mật độ dân số đạt 429 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [0, 102, 204, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: BinhThuy,
+                    Name: "Bình Thủy",
+                    Location: "Quận Bình Thủy nằm ở khu vực trung tâm của thành phố Cần Thơ. Quận có diện tích 67,20 km², dân số năm 2019 là 142.164 người, mật độ dân số đạt 2.014 người/km².",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [204, 0, 153, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: PhongDien,
+                    Name: "Phong Điền",
+                    Location: "Huyện Phong Điền nằm ở phía tây nam ngoại thành của thành phố Cần Thơ, nằm cách trung tâm thành phố khoảng 10 km. Huyện có diện tích \t125,29 km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [153, 204, 255, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: NinhKieu,
+                    Name: "Ninh Kiều",
+                    Location: "Quận Ninh Kiều nằm ở trung tâm thành phố Cần Thơ. Quận Ninh Kiều có diện tích 29,22 km², dân số năm 2019 là 280.494 người, mật độ dân số đạt 9.599 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [204, 102, 0, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                },
+                {
+                    type: "polygon",
+                    rings: CaiRang,
+                    Name: "Cái Răng",
+                    Location: "Quận Cái Răng nằm ở phía nam nội thành của thành phố Cần Thơ. Quận Cái Răng có diện tích 62,53 km², dân số năm 2019 là 105.393 người, mật độ dân số đạt 1.685 người/km²",
+                    symbol: {
+                        type: "simple-fill",
+                        color: [153, 204, 0, 0.4],
+                        outline: {
+                            color: [255, 255, 255],
+                            width: 1
+                        }
+                    },
+                    popupTemplate: point_template_location
+                }
+            ],
+
+            "lines": [
+                {
+                    type: "polyline",
+                    paths: tl921_1,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 921",
+                    Location: "Đường tỉnh 921 có chiều dài 24,5km, điểm đầu giao với quốc lộ 91 tại Km45+00",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl921_2,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 921",
+                    Location: "Đường tỉnh 921 có chiều dài 24,5km, điểm đầu giao với quốc lộ 91 tại Km45+00",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl921_3,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 921",
+                    Location: "Đường tỉnh 921 có chiều dài 24,5km, điểm đầu giao với quốc lộ 91 tại Km45+00",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl921_4,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 921",
+                    Location: "Đường tỉnh 921 có chiều dài 24,5km, điểm đầu giao với quốc lộ 91 tại Km45+00",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl921_5,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 921",
+                    Location: "Đường tỉnh 921 có chiều dài 24,5km, điểm đầu giao với quốc lộ 91 tại Km45+00",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl926_1,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 926",
+                    Location: "Tỉnh lộ 926 có chiều dài toàn tuyến 13,6 km, đi qua địa bàn TP Cần Thơ và tỉnh Hậu Giang",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl926_2,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 926",
+                    Location: "Tỉnh lộ 926 có chiều dài toàn tuyến 13,6 km, đi qua địa bàn TP Cần Thơ và tỉnh Hậu Giang",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl922,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 922",
+                    Location: "Đường 922 chiều dài tuyến hơn 29,5 km",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl920C,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 929",
+                    Location: "từ giao với QL 91 đến giao với ĐT 920 hiện hữu, tên gọi là đường Trương Văn Diễn",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl932,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 932",
+                    Location: "Tỉnh lộ 932 (Chiều dài 7.6Km): Tỉnh lộ 932 nằm ở huyện Phong Điền, Cần Thơ. Đường này đi qua nhiều địa điểm, bao gồm Nhơn Ái và Mỹ Khánh. Có nhiều lô đất được bán dọc theo con đường này.",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl919,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 919",
+                    Location: "Tỉnh lộ 919  (Chiều dài 37Km): Tỉnh lộ 919 nằm ở huyện Thới Lai, Cần Thơ. Cũng giống như Tỉnh lộ 932, có nhiều lô đất được bán dọc theo con đường này. Một số vấn đề về giao thông đã được ghi nhận trên Tỉnh lộ 919.",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl923,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 923",
+                    Location: "Đường tỉnh 923 có tổng chiều dài 13,8 km",
+                    popupTemplate: point_template_line
+                },
+                {
+                    type: "polyline",
+                    paths: tl918,
+                    symbol: {
+                        type: "simple-line",
+                        color: [226, 119, 40], // orange
+                        width: 2
+                    },
+                    Name: "Đường tỉnh 918",
+                    Location: "Tỉnh lộ 918, đoạn chạy qua phường Long Tuyền, quận Bình Thủy, TP. Cần Thơ, Việt Nam",
+                    popupTemplate: point_template_line
+                }
+            ]
+        };
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/Graphic",
+            "esri/layers/GraphicsLayer"
+        ], function (Map, MapView, Graphic, GraphicsLayer) {
+
+            var map = new Map({
+                basemap: "topo-vector"
+            });
+            map.on("load", function () {
+                map.graphics.enableMouseEvents();
+            });
+
+            var view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [105.71933063527709, 10.003546243735016],
+                zoom: 12,
+                highlightOptions: {
+                    color: "blue"
+                }
+            });
+            var createGraphic = function (data) {
+                return new Graphic({
+                    geometry: data,
+                    symbol: data.symbol,
+                    attributes: data,
+                    popupTemplate: data.popupTemplate
+                });
+            };
+            var graphicsLayer = new GraphicsLayer();
+            jsondata.points.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            jsondata.lines.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            jsondata.polygons.forEach(function (data) {
+                graphicsLayer.add(createGraphic(data));
+            });
+            map.add(graphicsLayer);
+
+
+        });
+    </script>
+</head>
+<body>
+<div id="viewDiv"></div>
+</body>
+</html>
