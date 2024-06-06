@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Popup actions | Sample | ArcGIS Maps SDK for JavaScript 4.27</title>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css" />
+  <script src="https://js.arcgis.com/4.34/"></script>
+
+  <script>
+    require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/GraphicsLayer",
+      "esri/Graphic",
+      "esri/symbols/PictureMarkerSymbol",
+      "esri/symbols/TextSymbol"
+    ], (Map, MapView, GraphicsLayer, Graphic, PictureMarkerSymbol, TextSymbol) => {
+      // Create the Map
+      const map = new Map({
+        basemap: "streets-navigation-vector"
+      });
+
+      // Create the MapView
+      const view = new MapView({
+        container: "viewDiv",
+        map: map,
+        center: [106.660172, 10.762622], // Coordinates for Ho Chi Minh City
+        zoom: 12
+      });
+
+      // Create a GraphicsLayer
+      const graphicsLayer = new GraphicsLayer();
+      map.add(graphicsLayer);
+
+      // Function to add a marker with text
+      function addMarker(longitude, latitude, content, text) {
+        // Define the point geometry
+        const point = {
+          type: "point",
+          longitude: longitude,
+          latitude: latitude
+        };
+
+        // Define the symbol for the point using an image
+        const pictureMarkerSymbol = new PictureMarkerSymbol({
+          url: "./images/ePoint.jpg",
+          height: "55px",
+          width: '45px'
+        });
+
+        // Define the popup template
+        const popupTemplate = {
+          // title: title,
+          content: `${content}`
+        };
+
+        // Create a graphic and add the geometry, symbol, and popup template
+        const pointGraphic = new Graphic({
+          geometry: point,
+          symbol: pictureMarkerSymbol,
+          popupTemplate: popupTemplate
+        });
+
+        // Define the text symbol for the label
+        const textSymbol = new TextSymbol({
+          text: text,
+          color: "black",
+          haloColor: "white",
+          haloSize: "1px",
+          yoffset: 20, // Increased yoffset to place text above the marker
+          font: {
+            size: 12,
+            family: "sans-serif"
+          }
+        });
+
+        // Create a graphic for the text
+        const textGraphic = new Graphic({
+          geometry: point,
+          symbol: textSymbol
+        });
+
+        // Add the graphics to the graphics layer
+        graphicsLayer.addMany([pointGraphic, textGraphic]);
+      }
+
+      // Add marker for Ho Chi Minh City
+      addMarker(106.660172, 10.762622,
+             `<div><img src='./images/green-dot.png' height="24px" alt="image description"/> Line 2</div>`,
+              'HCM'
+      );
+
+    });
+  </script>
+</head>
+
+<body>
+<div id="viewDiv"></div>
+</body>
+</html>

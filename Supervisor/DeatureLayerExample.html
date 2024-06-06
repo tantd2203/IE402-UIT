@@ -1,0 +1,196 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Bản đồ giám sát</title>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.27/"></script>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/Graphic",
+            "esri/geometry/Point",
+            "esri/renderers/SimpleRenderer",
+            "esri/symbols/PictureMarkerSymbol",
+            "esri/symbols/TextSymbol",
+            "esri/PopupTemplate"
+        ], (Map, MapView, FeatureLayer, Graphic, Point, SimpleRenderer, PictureMarkerSymbol, TextSymbol, PopupTemplate) => {
+            // Tạo Map
+            const map = new Map({
+                basemap: "streets-navigation-vector"
+            });
+
+            // Tạo MapView
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                center: [106.660172, 10.762622],
+                zoom: 12
+            });
+
+            // Tạo FeatureLayer với dữ liệu client-side
+            const featureLayer = new FeatureLayer({
+                source: [], // Ban đầu là một mảng rỗng cho dữ liệu client-side
+                fields: [
+                    { name: "ObjectID", alias: "ObjectID", type: "oid" },
+                    { name: "name", alias: "Name", type: "string" },
+                    { name: "title", alias: "Title", type: "string" },
+                    { name: "avatar", alias: "avatar", type: "string" },
+                    { name: "url", alias: "url", type: "string" },
+                    { name: "description", alias: "Description", type: "string" }
+                ],
+                objectIdField: "ObjectID",
+
+                renderer: new SimpleRenderer({
+                    symbol: new PictureMarkerSymbol({
+                        url: "./images/ePoint.jpg",
+                        height: "55px",
+                        width: '45px'
+                    })
+                }),
+
+                popupTemplate: new PopupTemplate({
+                    title: "{title}",
+                    content: `
+                    <div style="display: flex;">
+                        <div style="flex: 3; padding-right: 10px; width: 70px">
+                            <img src="http://localhost:63343/IE402/Supervisor/images/avatar1.png" alt="Image" style="width: 100%; height: auto;">
+                        </div>
+                        <div style="flex: 1;">
+                            <div>{description}</div>
+                        </div>
+                    </div>`
+                })
+            });
+
+            map.add(featureLayer);
+
+            // Hàm thêm marker từ dữ liệu backend
+            function addOrUpdateMarker(data) {
+                const point = new Point({
+                    longitude: data.longitude,
+                    latitude: data.latitude
+                });
+
+                const attributes = {
+                    ObjectID: data.id,
+                    name: data.name,
+                    description: data.content,
+                    title: data.title,
+                    url: data.url,
+                    avatar: data.avatar,
+                };
+
+                let existingGraphic = featureLayer.source.items.find(g => g.attributes.ObjectID === data.id);
+                if (existingGraphic) {
+                    existingGraphic.geometry = point;
+                    existingGraphic.attributes = attributes;
+                } else {
+                    const pointGraphic = new Graphic({
+                        geometry: point,
+                        attributes: attributes
+                    });
+
+                    // Define the text symbol for the label
+                    const textSymbol = new TextSymbol({
+                        text: data.name,
+                        color: "black",
+                        haloColor: "white",
+                        haloSize: "1px",
+                        yoffset: 20, // Tăng yoffset để đặt text trên marker
+                        font: {
+                            size: 12,
+                            family: "sans-serif"
+                        }
+                    });
+
+                    const textGraphic = new Graphic({
+                        geometry: point,
+                        symbol: textSymbol
+                    });
+
+                    featureLayer.source.add(pointGraphic);
+                    view.graphics.add(textGraphic);
+                }
+            }
+
+            // setInterval(() => {
+            //     fetch('https://backend.example.com/api/points') // Thay bằng URL thực tế của bạn
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             data.forEach(item => addOrUpdateMarker(item));
+            //         });
+            // }, 5000); // Cập nhật mỗi 5 giây
+
+            // Khởi tạo dữ liệu hiển thị demo
+            addOrUpdateMarker({
+                id: 1,
+                longitude: 106.7038,
+                latitude: 10.7769,
+                name: "E001 - Thọ NT",
+                title: "Nguyễn Trường Thọ",
+                url: "./images/ePoint.jpg",
+                description: "",
+                avatar: "http://localhost:63343/IE402/Supervisor/images/avatar1.png",
+                content: "<div><img src=\"http://localhost:63343/IE402/Supervisor/images/store.png\" alt=\"Image\" style=\"height: auto; width: 18px\"/>  Bách hóa xanh</div>\n " +
+                    `<div><img src="http://localhost:63343/IE402/Supervisor/images/green-dot.png" alt="Image" style="height: auto; width: 16px"/> Đang trong ca làm</div>`,
+            });
+
+            addOrUpdateMarker({
+                id: 2,
+                longitude: 106.70136640001616,
+                latitude: 10.740553010823318,
+                name: "E002 - Dương LT",
+                title: "Lý Thanh Dương",
+                description: "",
+                avatar: "http://localhost:63343/IE402/Supervisor/images/avatar1.png",
+                content: "<div><img src=\"http://localhost:63343/IE402/Supervisor/images/store.png\" alt=\"Image\" style=\"height: auto; width: 18px\"/>  Bách hóa xanh</div>\n " +
+                    `<div><img src="http://localhost:63343/IE402/Supervisor/images/green-dot.png" alt="Image" style="height: auto; width: 16px"/> Đang trong ca làm</div>`,
+            });
+
+            addOrUpdateMarker({
+                id: 3,
+                longitude: 106.66800513012414,
+                latitude: 10.751457281439068,
+                name: "E003 - Tân ND",
+                title: "NGuyễn Duy Tân",
+                description: "",
+                avatar: "http://localhost:63343/IE402/Supervisor/images/avatar1.png",
+                content: "<div><img src=\"http://localhost:63343/IE402/Supervisor/images/store.png\" alt=\"Image\" style=\"height: auto; width: 18px\"/>  Bách hóa xanh</div>\n " +
+                    `<div><img src="http://localhost:63343/IE402/Supervisor/images/green-dot.png" alt="Image" style="height: auto; width: 16px"/> Đang trong ca làm</div>`,
+            });
+
+            addOrUpdateMarker({
+                id: 4,
+                longitude: 106.64807797644904,
+                latitude: 10.7672513784163,
+                name: "C001 - Thang PD",
+                title: "Phạm Đình Thắng",
+                description: "",
+                avatar: "http://localhost:63343/IE402/Supervisor/images/avatar1.png",
+                content: "<div><img src=\"http://localhost:63343/IE402/Supervisor/images/store.png\" alt=\"Image\" style=\"height: auto; width: 18px\"/>  Bách hóa xanh</div>\n " +
+                    `<div><img src="http://localhost:63343/IE402/Supervisor/images/green-dot.png" alt="Image" style="height: auto; width: 16px"/> Đang trong ca làm</div>`,
+            });
+        });
+    </script>
+</head>
+
+<body>
+<div id="viewDiv"></div>
+</body>
+</html>
